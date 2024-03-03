@@ -1,0 +1,81 @@
+[gd_scene load_steps=7 format=3 uid="uid://dnuaud4rpgnat"]
+
+[ext_resource type="Script" path="res://BasicMovement.cs" id="2_2yrk5"]
+[ext_resource type="Texture2D" uid="uid://bnafgtllt6pqw" path="res://Player.png" id="2_rbxhp"]
+[ext_resource type="Texture2D" uid="uid://c7t7xuvs0cjts" path="res://TileMapV264.png" id="3_123u8"]
+
+[sub_resource type="CircleShape2D" id="CircleShape2D_f4q8t"]
+radius = 16.0
+
+[sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_51bw3"]
+texture = ExtResource("3_123u8")
+texture_region_size = Vector2i(64, 64)
+0:0/0 = 0
+0:0/0/physics_layer_0/linear_velocity = Vector2(0, 0)
+0:0/0/physics_layer_0/angular_velocity = 0.0
+0:0/0/physics_layer_0/polygon_0/points = PackedVector2Array(-32, -32, 32, -32, 32, 32, -32, 32)
+1:0/0 = 0
+1:0/0/physics_layer_0/linear_velocity = Vector2(0, 0)
+1:0/0/physics_layer_0/angular_velocity = 0.0
+1:0/0/physics_layer_0/polygon_0/points = PackedVector2Array(-32, -32, 32, -32, 32, 32, -32, 32)
+2:0/0 = 0
+2:0/0/physics_layer_0/linear_velocity = Vector2(0, 0)
+2:0/0/physics_layer_0/angular_velocity = 0.0
+2:0/0/physics_layer_0/polygon_0/points = PackedVector2Array(-32, -32, 32, -32, 32, 32, -32, 32)
+0:1/0 = 0
+0:1/0/physics_layer_0/linear_velocity = Vector2(0, 0)
+0:1/0/physics_layer_0/angular_velocity = 0.0
+0:1/0/physics_layer_0/polygon_0/points = PackedVector2Array(-32, -32, 32, -32, 32, 32, -32, 32)
+2:1/0 = 0
+2:1/0/physics_layer_0/linear_velocity = Vector2(0, 0)
+2:1/0/physics_layer_0/angular_velocity = 0.0
+2:1/0/physics_layer_0/polygon_0/points = PackedVector2Array(-32, -32, 32, -32, 32, 32, -32, 32)
+1:1/0 = 0
+1:1/0/physics_layer_0/linear_velocity = Vector2(0, 0)
+1:1/0/physics_layer_0/angular_velocity = 0.0
+1:1/0/physics_layer_0/polygon_0/points = PackedVector2Array(-32, -32, 32, -32, 32, 32, -32, 32)
+1:2/0 = 0
+1:2/0/physics_layer_0/linear_velocity = Vector2(0, 0)
+1:2/0/physics_layer_0/angular_velocity = 0.0
+1:2/0/physics_layer_0/polygon_0/points = PackedVector2Array(-32, -32, -32, 12, -24.5, 1, -18, 5.5, -14, 16.5, -8, 3, -2.5, 9, 1, 22, 6, 9, 13, -2, 18.5, 5.5, 22, 27, 28, 8.5, 32, 12, 32, -32, -32, -32)
+2:2/0 = 0
+2:2/0/physics_layer_0/linear_velocity = Vector2(0, 0)
+2:2/0/physics_layer_0/angular_velocity = 0.0
+2:2/0/physics_layer_0/polygon_0/points = PackedVector2Array(-32, -32, 32, -32, 28, -19.5, 11.5, -4.5, 0.5, 18, -3, 17, -12.5, 4.5, -20, 0.5, -27, 4, -32, 9.5, -32, -32)
+0:2/0 = 0
+0:2/0/physics_layer_0/linear_velocity = Vector2(0, 0)
+0:2/0/physics_layer_0/angular_velocity = 0.0
+0:2/0/physics_layer_0/polygon_0/points = PackedVector2Array(-32, -32, -26.5, -17.5, -12, -6.5, 0.5, 19, 13.5, 3, 22.5, 2, 32, 9, 32, -32)
+
+[sub_resource type="TileSet" id="TileSet_r6p0y"]
+tile_size = Vector2i(64, 64)
+physics_layer_0/collision_layer = 1
+sources/1 = SubResource("TileSetAtlasSource_51bw3")
+
+[node name="Node2D" type="Node2D"]
+
+[node name="CharacterBody2D" type="CharacterBody2D" parent="."]
+position = Vector2(444, 250)
+script = ExtResource("2_2yrk5")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="CharacterBody2D"]
+shape = SubResource("CircleShape2D_f4q8t")
+debug_color = Color(0.580392, 0.00392157, 0.843137, 0.329412)
+
+[node name="Sprite2D" type="Sprite2D" parent="CharacterBody2D"]
+scale = Vector2(0.5, 0.5)
+texture = ExtResource("2_rbxhp")
+
+[node name="Camera2D" type="Camera2D" parent="CharacterBody2D"]
+zoom = Vector2(2, 2)
+drag_horizontal_enabled = true
+drag_vertical_enabled = true
+drag_left_margin = 0.4
+drag_top_margin = 0.4
+drag_right_margin = 0.4
+drag_bottom_margin = 0.4
+
+[node name="TileMap" type="TileMap" parent="."]
+tile_set = SubResource("TileSet_r6p0y")
+format = 2
+layer_0/tile_data = PackedInt32Array(327685, 1, 0, 327686, 65537, 0, 327687, 65537, 0, 327688, 65537, 0, 327689, 131073, 0, 196619, 1, 0, 196620, 131073, 0, 65544, 65537, 0, 65545, 131073, 0, 65543, 1, 0, 65540, 131073, 0, 65539, 1, 0, 65535, 65537, 0, 0, 131073, 0, 65534, 1, 0, 393221, 1, 2, 393222, 65537, 2, 393223, 65537, 2, 393224, 65537, 2, 393225, 131073, 2, 262156, 131073, 2, 262155, 1, 2, 131081, 131073, 2, 131079, 1, 2, 131080, 65537, 2, 131075, 1, 2, 131076, 131073, 2, 131070, 1, 1, 196606, 1, 2, 196607, 65537, 2, 131072, 131073, 2, 65536, 131073, 1, 131071, 65537, 1)
