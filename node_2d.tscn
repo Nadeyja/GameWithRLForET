@@ -54,19 +54,19 @@ sources/1 = SubResource("TileSetAtlasSource_51bw3")
 
 [node name="Node2D" type="Node2D"]
 
-[node name="CharacterBody2D" type="CharacterBody2D" parent="."]
+[node name="Player" type="CharacterBody2D" parent="."]
 position = Vector2(444, 250)
 script = ExtResource("2_2yrk5")
 
-[node name="CollisionShape2D" type="CollisionShape2D" parent="CharacterBody2D"]
+[node name="PlayerCollision" type="CollisionShape2D" parent="Player"]
 shape = SubResource("CircleShape2D_f4q8t")
 debug_color = Color(0.580392, 0.00392157, 0.843137, 0.329412)
 
-[node name="Sprite2D" type="Sprite2D" parent="CharacterBody2D"]
+[node name="PlayerSprite" type="Sprite2D" parent="Player"]
 scale = Vector2(0.5, 0.5)
 texture = ExtResource("2_rbxhp")
 
-[node name="Camera2D" type="Camera2D" parent="CharacterBody2D"]
+[node name="Camera2D" type="Camera2D" parent="Player"]
 zoom = Vector2(2, 2)
 drag_horizontal_enabled = true
 drag_vertical_enabled = true
