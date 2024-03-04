@@ -5,18 +5,20 @@ public partial class BasicMovement : CharacterBody2D
 {
 	public const float Speed = 300.0f;
 	public const float JumpVelocity = -600.0f;
-	public const float Gravity = 980.0f;
-	public int jump_buffer_frames = 0;
+	public const float GravityValue = 980.0f;
+	public const int JumpBufferFrames = 10;
+	public const int CoyoteTimeFrames = 5;
+	public int actual_coyote_time_frames = 0;
+	public int actual_jump_buffer_frames = 0;
 	public override void _PhysicsProcess(double delta)
 	{
 		Vector2 velocity = Velocity;
 
 		// Add the gravity.
-		if (!IsOnFloor())
-			velocity.Y += Gravity * (float)delta;
+		velocity = Gravity(velocity,delta);
 
 		// Handle Jump.
-		velocity = Jump(velocity);
+		velocity = JumpMovement(velocity);
 
 		// Get the input direction and handle the movement/deceleration.
 		// As good practice, you should replace UI actions with custom gameplay actions.
@@ -33,37 +35,69 @@ public partial class BasicMovement : CharacterBody2D
 		Velocity = velocity;
 		MoveAndSlide();
 	}
-	public Vector2 Jump(Vector2 velocity)
+	public Vector2 Movement(Vector2 velocity)
 	{
+		return velocity;
+	}
+	public Vector2 Gravity(Vector2 velocity, double delta)
+	{
+        if (!IsOnFloor())
+            velocity.Y += GravityValue * (float)delta;
+
+        return velocity;
+	}
+	public Vector2 JumpMovement(Vector2 velocity)
+	{
+		//On floor, start coyote time timer.
+		if (IsOnFloor())
+		{
+			actual_coyote_time_frames = CoyoteTimeFrames;
+		}
 		//Check if jump just been pressed.
 		if (Input.IsActionJustPressed("player_jump"))
 		{
 
 			if(IsOnFloor())
 			{
-				//If on floor, jump by adding velocity.
-				velocity.Y = JumpVelocity;
-				jump_buffer_frames = 0;
+				//If on floor, jump.
+				velocity = Jump(velocity);
 			}
+			else if(actual_coyote_time_frames > 0)
+			{
+				//Not on the floor and still in coyote time frames, jump.
+				velocity = Jump(velocity);
+            }
 			else
 			{
 				//Not on the floor, start jump buffer timer.
-				jump_buffer_frames = 10;
+				actual_jump_buffer_frames = JumpBufferFrames;
 			}
 		}
 		else
 		{
 			//Jump automatically if on floor and jump buffer timer didn't run out.
-			if(IsOnFloor() && jump_buffer_frames>0)	
+			if(IsOnFloor() && actual_jump_buffer_frames>0)	
 			{
-				velocity.Y = JumpVelocity;
-				jump_buffer_frames = 0;
+				velocity = Jump(velocity);
 			}
-			//Decrement jump_buffer_frames if timer didn't run out.
-			else if(jump_buffer_frames>0) {
-				jump_buffer_frames--;
+			//Decrement actual_jump_buffer_frames if timer didn't run out.
+			else if(actual_jump_buffer_frames > 0) {
+				actual_jump_buffer_frames--;
 			}
-		}
+            //Decrement actual_coyote_time_frames if timer didn't run out.
+            else if (actual_coyote_time_frames > 0)
+            {
+                actual_coyote_time_frames--;
+            }
+        }
 		return velocity;
 	}
+	public Vector2 Jump(Vector2 velocity)
+	{
+        velocity.Y = JumpVelocity;
+        actual_jump_buffer_frames = 0;
+        actual_coyote_time_frames = 0;
+        return velocity;
+	}
+	
 }
