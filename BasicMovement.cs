@@ -1,9 +1,12 @@
 using Godot;
 using System;
 
+
 public partial class BasicMovement : CharacterBody2D
 {
+	//Speed of left right movement.
 	public const float Speed = 300.0f;
+	//Velocity of jump.
 	public const float JumpVelocity = -600.0f;
 	public const float GravityValue = 980.0f;
 	public const int JumpBufferFrames = 10;
@@ -17,26 +20,29 @@ public partial class BasicMovement : CharacterBody2D
 		// Add the gravity.
 		velocity = Gravity(velocity,delta);
 
-		// Handle Jump.
+		// Handle jump.
 		velocity = JumpMovement(velocity);
 
-		// Get the input direction and handle the movement/deceleration.
-		// As good practice, you should replace UI actions with custom gameplay actions.
-		Vector2 direction = Input.GetVector("player_move_left","player_move_right","ui_up","ui_down");
-		if (direction != Vector2.Zero)
-		{
-			velocity.X = direction.X * Speed;
-		}
-		else
-		{
-			velocity.X = Mathf.MoveToward(Velocity.X, 0, (Speed/10));
-		}
+		//Handle left right movement.
+		velocity = Movement(velocity);
 
 		Velocity = velocity;
 		MoveAndSlide();
 	}
 	public Vector2 Movement(Vector2 velocity)
 	{
+		//Take direction from input map.
+		Vector2 direction = Input.GetVector("player_move_left", "player_move_right", "ui_up", "ui_down");
+		if (direction != Vector2.Zero)
+		{
+			//If there is direction make velocity.
+			velocity.X = direction.X * Speed;
+		}
+		else
+		{
+			//If any direction button isn't pressed then decelerate.
+			velocity.X = Mathf.MoveToward(velocity.X, 0, Speed/10);
+		}
 		return velocity;
 	}
 	public Vector2 Gravity(Vector2 velocity, double delta)
