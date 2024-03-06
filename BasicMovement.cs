@@ -13,6 +13,7 @@ public partial class BasicMovement : CharacterBody2D
 	public const int CoyoteTimeFrames = 5;
 	public int actual_coyote_time_frames = 0;
 	public int actual_jump_buffer_frames = 0;
+	public bool can_double_jump = false;
 	public override void _PhysicsProcess(double delta)
 	{
 		Vector2 velocity = Velocity;
@@ -23,8 +24,11 @@ public partial class BasicMovement : CharacterBody2D
 		// Handle jump.
 		velocity = JumpMovement(velocity);
 
-		//Handle left right movement.
-		velocity = Movement(velocity);
+		//Handle double jump.
+        velocity = DoubleJump(velocity);
+
+        //Handle left right movement.
+        velocity = Movement(velocity);
 
 		Velocity = velocity;
 		MoveAndSlide();
@@ -96,6 +100,19 @@ public partial class BasicMovement : CharacterBody2D
                 actual_coyote_time_frames--;
             }
         }
+		return velocity;
+	}
+	public Vector2 DoubleJump(Vector2 velocity)
+	{
+		if(IsOnFloor() && can_double_jump==false)
+		{
+			can_double_jump = true;
+		}
+		if (Input.IsActionJustPressed("player_jump") && can_double_jump==true && !IsOnFloor())
+		{
+			velocity = Jump(velocity);
+			can_double_jump = false;
+		}
 		return velocity;
 	}
 	public Vector2 Jump(Vector2 velocity)
