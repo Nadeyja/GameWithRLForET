@@ -1,0 +1,23 @@
+[gd_scene load_steps=6 format=3 uid="uid://cfbfsj8ygwd3v"]
+
+[ext_resource type="PackedScene" uid="uid://ce2fl7tcbye7l" path="res://objects/starting_platform.tscn" id="1_qbeur"]
+[ext_resource type="PackedScene" uid="uid://btjt75w13tikl" path="res://objects/platform2x.tscn" id="2_p08do"]
+[ext_resource type="PackedScene" uid="uid://7bqp7qpy0xob" path="res://objects/platform3x.tscn" id="3_o11km"]
+[ext_resource type="PackedScene" uid="uid://iqc02a8l21ej" path="res://objects/platform4x.tscn" id="4_gy0db"]
+[ext_resource type="PackedScene" uid="uid://xv0hkvwh1n2a" path="res://objects/platform5x.tscn" id="5_tfehj"]
+
+[node name="Node2D" type="Node2D"]
+
+[node name="startingPlatform" parent="." instance=ExtResource("1_qbeur")]
+
+[node name="2x" parent="." instance=ExtResource("2_p08do")]
+position = Vector2(2, 170)
+
+[node name="3x" parent="." instance=ExtResource("3_o11km")]
+position = Vector2(232, 173)
+
+[node name="4x" parent="." instance=ExtResource("4_gy0db")]
+position = Vector2(537, 173)
+
+[node name="5x" parent="." instance=ExtResource("5_tfehj")]
+position = Vector2(260, 303)

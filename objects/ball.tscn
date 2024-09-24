@@ -1,0 +1,28 @@
+[gd_scene load_steps=4 format=3 uid="uid://dwhlr7kgcxbrs"]
+
+[ext_resource type="Script" path="res://player/BasicMovement.cs" id="1_8gep2"]
+[ext_resource type="Texture2D" uid="uid://bnafgtllt6pqw" path="res://Player.png" id="2_mwnjt"]
+
+[sub_resource type="CircleShape2D" id="CircleShape2D_ns3or"]
+radius = 16.0
+
+[node name="Player" type="CharacterBody2D"]
+script = ExtResource("1_8gep2")
+
+[node name="PlayerCollision2" type="CollisionShape2D" parent="."]
+shape = SubResource("CircleShape2D_ns3or")
+debug_color = Color(0.580392, 0.00392157, 0.843137, 0.329412)
+
+[node name="PlayerSprite2" type="Sprite2D" parent="."]
+scale = Vector2(0.5, 0.5)
+texture = ExtResource("2_mwnjt")
+
+[node name="Camera2D2" type="Camera2D" parent="."]
+limit_left = -300
+limit_right = 300
+drag_horizontal_enabled = true
+drag_vertical_enabled = true
+drag_left_margin = 1.0
+drag_top_margin = 0.4
+drag_right_margin = 1.0
+drag_bottom_margin = 0.4

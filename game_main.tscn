@@ -1,0 +1,10 @@
+[gd_scene load_steps=3 format=3 uid="uid://6wtdqa5xmqjl"]
+
+[ext_resource type="Script" path="res://objects/GeneratePlatform.cs" id="1_0a1se"]
+[ext_resource type="PackedScene" uid="uid://dwhlr7kgcxbrs" path="res://objects/ball.tscn" id="1_4hfmy"]
+
+[node name="Node2D" type="Node2D"]
+script = ExtResource("1_0a1se")
+
+[node name="Player" parent="." instance=ExtResource("1_4hfmy")]
+position = Vector2(1, -50)
