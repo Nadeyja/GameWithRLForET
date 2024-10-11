@@ -1,12 +1,16 @@
 using Godot;
 using System;
+using System.Collections.Generic;
+using System.Linq;
 
 //Class for basic movement of the player. Include: right-left movement, jump, gravity, jump buffer and coyote time.
- 
+
 public partial class BasicMovement : CharacterBody2D
 {
+	//public Vector2 AIXMovement { get; set; }
+	//public Node2D Controller { get; set; }
 	//Speed of left right movement.
-	public const float SPEED = 300.0f;
+	public const float SPEED = 450.0f;
 	//Velocity of jump.
 	public const float JUMPVELOCITY = -600.0f;
 	//Velocity of gravity.
@@ -19,6 +23,9 @@ public partial class BasicMovement : CharacterBody2D
 	public int actual_jump_buffer_frames = 0;
 	//Timer for coyote time.
 	public int actual_coyote_time_frames = 0;
+	KinematicCollision2D last_collision;
+	private int first_collision = 0;
+	List<KinematicCollision2D> collision_list = new List<KinematicCollision2D>();
 	public override void _PhysicsProcess(double delta)
 	{
 		Vector2 velocity = Velocity;
@@ -33,12 +40,23 @@ public partial class BasicMovement : CharacterBody2D
 		velocity = Movement(velocity);
 
 		Velocity = velocity;
+		
 		MoveAndSlide();
+		Scoring();
+		
 	}
 	public Vector2 Movement(Vector2 velocity)
 	{
-		//Take direction from input map.
-		Vector2 direction = Input.GetVector("player_move_left", "player_move_right", "ui_up", "ui_down");
+		Vector2 direction;
+        //Take direction from input map.
+       // if ((string)Controller.Get("heuristic") == "human") 
+		//{ 
+			direction = Input.GetVector("player_move_left", "player_move_right", "ui_up", "ui_down");
+		//}
+		//else
+		//{
+			//direction = AIXMovement;
+		//}
 		if (direction != Vector2.Zero)
 		{
 			//If there is direction make velocity.
@@ -112,6 +130,39 @@ public partial class BasicMovement : CharacterBody2D
         actual_jump_buffer_frames = 0;
         actual_coyote_time_frames = 0;
         return velocity;
+	}
+	public void Scoring()
+	{
+
+
+        if (IsOnFloor()) {
+			int collision_check = 0;
+			if (first_collision == 0)
+			{
+				first_collision = 1;
+				collision_list.Add(GetLastSlideCollision());
+			}
+			var collision = GetLastSlideCollision();
+		
+			for(int i = 0;  i < collision_list.Count; i++) 
+			{
+				if (collision != null) { 
+					if (collision_list.ElementAt(i).GetColliderId() != collision.GetColliderId()) 
+					{
+						collision_check++;
+					}
+				}
+			}
+			if (collision_check == collision_list.Count) 
+			{
+				GeneratePlatform generatePlatform = new GeneratePlatform();
+				generatePlatform.set_current_platform((AnimatableBody2D)collision.GetCollider());
+				Score sc = new Score();
+				sc.append_score();
+				collision_list.Add(collision);
+            }
+			
+		}
 	}
 	
 }
