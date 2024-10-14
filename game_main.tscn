@@ -1,14 +1,6 @@
-[gd_scene load_steps=4 format=3 uid="uid://6wtdqa5xmqjl"]
+[gd_scene load_steps=2 format=3 uid="uid://6wtdqa5xmqjl"]
 
 [ext_resource type="Script" path="res://objects/GeneratePlatform.cs" id="1_0a1se"]
-[ext_resource type="PackedScene" uid="uid://dwhlr7kgcxbrs" path="res://objects/ball.tscn" id="1_4hfmy"]
-[ext_resource type="Script" path="res://addons/godot_rl_agents/sync.gd" id="3_dgu0y"]
 
-[node name="Node2D" type="Node2D"]
+[node name="Platforms" type="Node2D"]
 script = ExtResource("1_0a1se")
-
-[node name="Player" parent="." instance=ExtResource("1_4hfmy")]
-position = Vector2(1, -50)
-
-[node name="Sync" type="Node" parent="."]
-script = ExtResource("3_dgu0y")

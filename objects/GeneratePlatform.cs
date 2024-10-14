@@ -5,12 +5,19 @@ using System.Security.Cryptography.X509Certificates;
 
 public partial class GeneratePlatform : Node
 {
+    public Node2D AIController2D;
+    public Node2D ParrentNode;
+    public CharacterBody2D Player;
 
+    //Randomizing
     public const int SEED = 10;
     public const int SEED2 = 20;
-    public static readonly int[] SPAWN_SPEED = { 10, 9, 8, 7, 6, 5, 4, 3, 2 };
+    
+    BasicMovement BasicMovement = new BasicMovement();
+
     Random rand = new Random(SEED);
     Random rand2 = new Random(SEED2);
+    //PackedScenes
     static PackedScene S_PLAT_SC = GD.Load<PackedScene>("res://objects/starting_platform.tscn");
     static PackedScene X2_SC = GD.Load<PackedScene>("res://objects/platform2x.tscn");
     static PackedScene X3_SC = GD.Load<PackedScene>("res://objects/platform3x.tscn");
@@ -18,15 +25,22 @@ public partial class GeneratePlatform : Node
     static PackedScene X5_SC = GD.Load<PackedScene>("res://objects/platform5x.tscn");
     static PackedScene WALL = GD.Load<PackedScene>("res://objects/wall.tscn");
     PackedScene[] scene_list = {X2_SC, X3_SC, X4_SC, X5_SC};
+    
     Node2D _platforms;
+    
     Timer _timer;
+
+    public static readonly int[] SPAWN_SPEED = { 10, 9, 8, 7, 6, 5, 4, 3, 2 };
     public const int ST_PLATFORM_X = 0;
     public const int ST_PLATFORM_Y = 0;
     public const int OFFSET_Y = 150;
+    
     int current_y = ST_PLATFORM_Y;
     int current_x = ST_PLATFORM_X;
     int last_x = 0;
+    int removed;
     public Vector2 STARTING_VECTOR = new Vector2(ST_PLATFORM_X, ST_PLATFORM_Y);
+    
     public AnimatableBody2D c_plat;
     public Area2D wall;
     public AnimatableBody2D n_plat;
@@ -39,17 +53,23 @@ public partial class GeneratePlatform : Node
     // Called when the node enters the scene tree for the first time.
     public override void _Ready()
 	{
-       
+        removed = 0;
+        AIController2D = GetNode<Node2D>("/root/MainNode/Player/AIController2D");
+        ParrentNode = GetNode<Node2D>("..");
+        Player = GetNode<CharacterBody2D>("/root/MainNode/Player");
+        
         c_plat = S_PLAT_SC.Instantiate<AnimatableBody2D>();
         c_plat.Set("position",STARTING_VECTOR);
         wall = WALL.Instantiate<Area2D>();
         wall.Set("position", new Vector2(ST_PLATFORM_X, ST_PLATFORM_Y + 40));
+        
         n_plat = SpawnPlatform(scene_list[rand2.Next(0,3)]);
         a_plat = SpawnPlatform(scene_list[rand2.Next(0, 3)]);
         b_plat = SpawnPlatform(scene_list[rand2.Next(0, 3)]);
         d_plat = SpawnPlatform(scene_list[rand2.Next(0, 3)]);
         e_plat = SpawnPlatform(scene_list[rand2.Next(0, 3)]);
         l_plat = SpawnPlatform(scene_list[rand2.Next(0, 3)]);
+        
         AddChild(c_plat);
         AddChild(n_plat);
         AddChild(a_plat);
@@ -58,9 +78,12 @@ public partial class GeneratePlatform : Node
         AddChild(e_plat);
         AddChild(l_plat);
         AddChild(wall);
+        
+        
         _timer = new Timer();
         AddChild(_timer);
-        _timer.Start(5);
+        _timer.Start(2);
+       
 
 	}
 
@@ -80,9 +103,14 @@ public partial class GeneratePlatform : Node
             MovePlatforms();
             _timer.Start(1);
         }
-        if (wall.HasOverlappingBodies())
+        
+        if (wall.HasOverlappingBodies() && removed==0)
         {
-            GetTree().ReloadCurrentScene();
+            removed = 1;
+            AIController2D.Call("reset");
+            wall.QueueFree();
+            ParrentNode.Call("reset_platforms");
+            Player.Call("ResetPlayerPosition");
         }
         
 
@@ -128,7 +156,7 @@ public partial class GeneratePlatform : Node
             CheckPlatform();
         }
     }
-    public void set_current_platform(AnimatableBody2D platform)
+    public void SetCurrentPlatform(AnimatableBody2D platform)
     {
         current_platform = platform;
     }
