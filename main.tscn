@@ -1,8 +1,9 @@
-[gd_scene load_steps=4 format=3 uid="uid://lsola352aira"]
+[gd_scene load_steps=5 format=3 uid="uid://lsola352aira"]
 
 [ext_resource type="Script" path="res://main.gd" id="1_lrgpt"]
 [ext_resource type="PackedScene" uid="uid://dwhlr7kgcxbrs" path="res://player/ball.tscn" id="2_l5lpv"]
 [ext_resource type="Script" path="res://addons/godot_rl_agents/sync.gd" id="3_1msti"]
+[ext_resource type="PackedScene" uid="uid://b20asg1hbpyyh" path="res://objects/wall.tscn" id="4_qjjr1"]
 
 [node name="MainNode" type="Node2D"]
 script = ExtResource("1_lrgpt")
@@ -10,9 +11,12 @@ script = ExtResource("1_lrgpt")
 [node name="Player" parent="." instance=ExtResource("2_l5lpv")]
 position = Vector2(0, -50)
 
-[node name="Sync" type="Node" parent="Player"]
+[node name="Timer" type="Timer" parent="."]
+
+[node name="Sync" type="Node" parent="."]
 script = ExtResource("3_1msti")
-action_repeat = 10
-speed_up = 10.0
+action_repeat = 6
+
+[node name="Wall" parent="." instance=ExtResource("4_qjjr1")]
 
 [editable path="Player"]

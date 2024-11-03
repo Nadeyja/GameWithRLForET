@@ -203,12 +203,15 @@ func _training_process():
 		if need_to_send_obs:
 			need_to_send_obs = false
 			var reward = _get_reward_from_agents()
+			var info = _get_info_from_agents(agents_training)
 			var done = _get_done_from_agents()
+			
 			#_reset_agents_if_done() # this ensures the new observation is from the next env instance : NEEDS REFACTOR
-
+			#print(reward)
 			var obs = _get_obs_from_agents(agents_training)
+			
 
-			var reply = {"type": "step", "obs": obs, "reward": reward, "done": done}
+			var reply = {"type": "step", "obs": obs, "reward": reward, "done": done, "info": info}
 			_send_dict_as_json_message(reply)
 
 		var handled = handle_message()
@@ -547,7 +550,13 @@ func _get_done_from_agents(agents: Array = agents_training):
 			agent.set_done_false()
 		dones.append(done)
 	return dones
-
+	
+func _get_info_from_agents(agents: Array = agents_training):
+	var infos = []
+	for agent in agents:
+		infos.append(agent.get_info())
+		#print(infos)
+	return infos
 
 func _set_agent_actions(actions, agents: Array = all_agents):
 	for i in range(len(actions)):

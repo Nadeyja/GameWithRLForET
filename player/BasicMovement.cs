@@ -15,7 +15,7 @@ public partial class BasicMovement : CharacterBody2D
 	[Export]
 	public Node2D AIController2D;
 	//Speed of left right movement.
-	public const float SPEED = 450.0f;
+	public const float SPEED = 550.0f;
 	//Velocity of jump.
 	public const float JUMPVELOCITY = -600.0f;
 	//Velocity of gravity.
@@ -31,6 +31,7 @@ public partial class BasicMovement : CharacterBody2D
 	KinematicCollision2D last_collision;
 	private int first_collision = 0;
 	List<KinematicCollision2D> collision_list = new List<KinematicCollision2D>();
+	public double increment_reward = 0;
 	public override void _PhysicsProcess(double delta)
 	{
 		Vector2 velocity = Velocity;
@@ -148,6 +149,7 @@ public partial class BasicMovement : CharacterBody2D
                     //Not on the floor, start jump buffer timer.
                     actual_jump_buffer_frames = JUMPBUFFERFRAMES;
                 }
+                
             }
             else
             {
@@ -167,13 +169,15 @@ public partial class BasicMovement : CharacterBody2D
                     actual_coyote_time_frames--;
                 }
             }
+            
+
 
         }
 		return velocity;
 	}
 	public Vector2 Jump(Vector2 velocity)
 	{
-		//Add jump velocity to Y-axis velocity and reset jump buffer and coyote time timers.
+        //Add jump velocity to Y-axis velocity and reset jump buffer and coyote time timers.
         velocity.Y = JUMPVELOCITY;
         actual_jump_buffer_frames = 0;
         actual_coyote_time_frames = 0;
@@ -204,30 +208,63 @@ public partial class BasicMovement : CharacterBody2D
 			if (collision_check == collision_list.Count) 
 			{
 				GeneratePlatform generatePlatform = new GeneratePlatform();
-				generatePlatform.SetCurrentPlatform((AnimatableBody2D)collision.GetCollider());	
+				generatePlatform.SetCurrentPlatform((AnimatableBody2D)collision.GetCollider());
 				Score sc = new Score();
 				sc.append_score();
-				AIController2D.Set("reward", sc.get_score());
+				double reward = (double)AIController2D.Get("reward");
+				AIController2D.Set("reward", reward+0.2+increment_reward);
+				increment_reward = increment_reward + 0.002;
 				collision_list.Add(collision);
-				GD.Print("After add: "+ sc.get_score());
+				//GD.Print("After collision: "+ sc.get_score());
                 
             }
-			
+
 		}
-			
-	}
+		/*else
+		{
+			if(IsOnCeiling()) { 
+				Score sc = new Score();
+				sc.touched_celling();
+                double reward = (double)AIController2D.Get("reward");
+                AIController2D.Set("reward", reward-0.002);
+                GD.Print("After collision: " + sc.get_score());
+
+            }
+            if (IsOnWall())
+            {
+                Score sc = new Score();
+				sc.append_score_by(-0.02);
+                double reward = (double)AIController2D.Get("reward");
+                AIController2D.Set("reward", reward-0.001);
+                GD.Print("After collision: " + sc.get_score());
+
+            }
+        }*/
+
+    }
 	public void ResetPlayerPosition()
 	{
-		Velocity = Vector2.Zero;
-		first_collision = 0;
-		collision_list.Clear();
-        this.Set("position", new Vector2(0,-50));
-		
+		Score sc2 = new Score();
+		double score2 = sc2.get_score2();
+		if (score2 > 50) {
+			AIController2D.Set("is_success", true);
+		}
+		else
+		{
+			AIController2D.Set("is_success", false);
+		}		
+		increment_reward = 0;
 		Score sc = new Score();
 		sc.lose_score();
-		sc.reset_score();
-		AIController2D.Set("reward", sc.get_score());
-		GD.Print("After lose: " + sc.get_score());
+        double reward = (double)AIController2D.Get("reward");
+        AIController2D.Set("reward", reward-1);
+		AIController2D.Set("done", true);
+		sc.reset_score(); 
+		Velocity = Vector2.Zero;	
+		first_collision = 0;
+		collision_list.Clear();
+		this.Set("position", new Vector2(0,-50));
+	
 
 	}
 	
