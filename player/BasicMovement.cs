@@ -212,25 +212,25 @@ public partial class BasicMovement : CharacterBody2D
 				Score sc = new Score();
 				sc.append_score();
 				double reward = (double)AIController2D.Get("reward");
-				AIController2D.Set("reward", reward+0.2+increment_reward);
-				increment_reward = increment_reward + 0.002;
+				AIController2D.Set("reward", reward+0.5+increment_reward);
+				increment_reward = increment_reward + 0.005;
 				collision_list.Add(collision);
 				//GD.Print("After collision: "+ sc.get_score());
                 
             }
 
 		}
-		/*else
+		else
 		{
 			if(IsOnCeiling()) { 
 				Score sc = new Score();
 				sc.touched_celling();
                 double reward = (double)AIController2D.Get("reward");
-                AIController2D.Set("reward", reward-0.002);
-                GD.Print("After collision: " + sc.get_score());
+                AIController2D.Set("reward", reward-0.005);
+                //GD.Print("After collision: " + sc.get_score());
 
             }
-            if (IsOnWall())
+            /*if (IsOnWall())
             {
                 Score sc = new Score();
 				sc.append_score_by(-0.02);
@@ -238,8 +238,8 @@ public partial class BasicMovement : CharacterBody2D
                 AIController2D.Set("reward", reward-0.001);
                 GD.Print("After collision: " + sc.get_score());
 
-            }
-        }*/
+            }*/
+        }
 
     }
 	public void ResetPlayerPosition()
@@ -257,13 +257,13 @@ public partial class BasicMovement : CharacterBody2D
 		Score sc = new Score();
 		sc.lose_score();
         double reward = (double)AIController2D.Get("reward");
-        AIController2D.Set("reward", reward-1);
+        AIController2D.Set("reward", reward-2);
 		AIController2D.Set("done", true);
 		sc.reset_score(); 
 		Velocity = Vector2.Zero;	
 		first_collision = 0;
 		collision_list.Clear();
-		this.Set("position", new Vector2(0,-50));
+        this.Set("position", new Vector2(0,-50));
 	
 
 	}

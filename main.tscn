@@ -11,11 +11,15 @@ script = ExtResource("1_lrgpt")
 [node name="Player" parent="." instance=ExtResource("2_l5lpv")]
 position = Vector2(0, -50)
 
+[node name="AIController2D" parent="Player" index="3" node_paths=PackedStringArray("wall")]
+wall = NodePath("../../Wall")
+
 [node name="Timer" type="Timer" parent="."]
 
 [node name="Sync" type="Node" parent="."]
 script = ExtResource("3_1msti")
-action_repeat = 6
+control_mode = 2
+onnx_model_path = "NinthIteration.onnx"
 
 [node name="Wall" parent="." instance=ExtResource("4_qjjr1")]
 

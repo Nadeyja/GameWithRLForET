@@ -11,6 +11,7 @@ You can run this example as follows:
 
 Feel free to copy this script and update, add or remove the hp values to your liking.
 """
+from pprint import pprint
 
 try:
     import optuna
@@ -52,32 +53,41 @@ env = StableBaselinesGodotEnv(env_path=args.env_path, speedup=args.speedup)
 n_agents = env.num_envs
 env.close()
 
-N_TRIALS = 20
+N_TRIALS = 200
 N_STARTUP_TRIALS = 5
 N_EVALUATIONS = 1
-N_TIMESTEPS = 10240
+N_TIMESTEPS = 30000
 EVAL_FREQ = max(int((N_TIMESTEPS // N_EVALUATIONS) // (n_agents * args.n_parallel)), 1)
 N_EVAL_EPISODES = 3
-STOP_TRIAL_TIMEOUT = 60 * 60 * 2  # 2 hours
+STOP_TRIAL_TIMEOUT = 60 * 60 * 4  # 4 hours
 
 DEFAULT_HYPERPARAMS = {
-    "ent_coef": 0.001,
+
 }
 
 
 def sample_ppo_params(trial: optuna.Trial) -> Dict[str, Any]:
     """Sampler for PPO hyperparameters."""
-    learning_rate = trial.suggest_loguniform("learning_rate", 0.0001, 0.01)
-    n_steps = trial.suggest_categorical("n_steps", [32, 64, 128, 256, 512, 1024, 2048])
-    batch_size = trial.suggest_categorical("batch_size", [32, 64, 128, 256, 512, 1024, 2048])
-    n_epochs = trial.suggest_categorical("n_epochs", [2, 4, 8, 16])
 
+    n_steps = trial.suggest_categorical("n_steps", [64, 128, 256, 512, 1024, 2048])
+    batch_size = trial.suggest_categorical("batch_size", [8, 16, 32, 64, 128, 256, 512])
+    n_epochs = trial.suggest_categorical("n_epochs", [5, 10, 15, 20])
+    gamma = trial.suggest_categorical("gamma", [0.9, 0.95, 0.99, 0.995, 0.999])
+    ent_coef = trial.suggest_float("ent_coef", 0.00001, 0.1, log=True)
+    learning_rate = trial.suggest_float("learning_rate", 0.00001, 0.01, log=True)
+    clip_range = trial.suggest_categorical("clip_range", [0.1, 0.2, 0.3])
+    gae_lambda = trial.suggest_categorical("gae_lambda", [0.8, 0.9, 0.92, 0.95, 0.98, 0.99, 1.0])
+    if batch_size > n_steps:
+        batch_size = n_steps
     return {
         "learning_rate": learning_rate,
         "n_steps": n_steps,
         "batch_size": batch_size,
         "n_epochs": n_epochs,
-
+        "ent_coef": ent_coef,
+        "gamma": gamma,
+        "clip_range": clip_range,
+        "gae_lambda": gae_lambda,
     }
 
 
@@ -140,17 +150,29 @@ def objective(trial: optuna.Trial) -> float:
     eval_callback = TrialEvalCallback(
         eval_env, trial, n_eval_episodes=N_EVAL_EPISODES, eval_freq=EVAL_FREQ, deterministic=True
     )
-    print("aaaaa")
+
 
     nan_encountered = False
     try:
-        print("cccccc")
+
         model.learn(N_TIMESTEPS, callback=eval_callback)
-        print("babbbbb")
-    except AssertionError as e:
-        # Sometimes, random hyperparams can generate NaN.
+
+
+    except (AssertionError, ValueError) as e:
+
+        # Sometimes, random hyperparams can generate NaN
+
+        # Free memory
+
+        model.env.close()
+
+        eval_env.close()
+
+        # Prune hyperparams that generate NaNs
+
         print(e)
-        nan_encountered = True
+
+        raise optuna.exceptions.TrialPruned()
     finally:
         # Free memory.
         print("Freeing memory...")
@@ -170,16 +192,16 @@ def objective(trial: optuna.Trial) -> float:
 
 if __name__ == "__main__":
     # Set pytorch num threads to 1 for faster training.
-    print("I'm in")
+
     torch.set_num_threads(1)
-    print("Threads set")
+
     sampler = TPESampler(n_startup_trials=N_STARTUP_TRIALS)
-    print("Sampler")
+
     # Do not prune before 1/3 of the max budget is used.
     pruner = MedianPruner(n_startup_trials=N_STARTUP_TRIALS, n_warmup_steps=N_EVALUATIONS // 3)
-    print("Pruner")
+
     study = optuna.create_study(sampler=sampler, pruner=pruner, direction="maximize")
-    print("Study")
+
     try:
         study.optimize(objective, n_trials=N_TRIALS, timeout=STOP_TRIAL_TIMEOUT)
         print("Optimize")

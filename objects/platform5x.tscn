@@ -1,6 +1,7 @@
 [gd_scene load_steps=9 format=3 uid="uid://xv0hkvwh1n2a"]
 
 [ext_resource type="Texture2D" uid="uid://d0ab611862b60" path="res://LeftPlatform.png" id="1_8jool"]
+[ext_resource type="Script" path="res://objects/platform5x.gd" id="1_pwhim"]
 [ext_resource type="Texture2D" uid="uid://bcwjxmvsblta8" path="res://MidPlatform.png" id="2_0x1ys"]
 [ext_resource type="Texture2D" uid="uid://v16kp2mky5yq" path="res://RightPlatform.png" id="3_s1f3h"]
 
@@ -16,10 +17,9 @@ size = Vector2(48, 60)
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_40pjc"]
 size = Vector2(262, 12)
 
-[sub_resource type="RectangleShape2D" id="RectangleShape2D_tjeyb"]
-size = Vector2(262, 52)
-
 [node name="5x" type="AnimatableBody2D"]
+collision_layer = 3
+script = ExtResource("1_pwhim")
 
 [node name="Sprite2D" type="Sprite2D" parent="."]
 position = Vector2(-120, 0)
@@ -65,10 +65,3 @@ collision_layer = 2
 [node name="CollisionShape2D" type="CollisionShape2D" parent="Area2D"]
 position = Vector2(0, -35)
 shape = SubResource("RectangleShape2D_40pjc")
-
-[node name="Area2D2" type="Area2D" parent="."]
-collision_layer = 16
-
-[node name="CollisionShape2D" type="CollisionShape2D" parent="Area2D2"]
-position = Vector2(0, 3)
-shape = SubResource("RectangleShape2D_tjeyb")

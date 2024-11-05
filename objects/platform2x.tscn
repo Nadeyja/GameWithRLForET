@@ -1,6 +1,7 @@
 [gd_scene load_steps=7 format=3 uid="uid://btjt75w13tikl"]
 
 [ext_resource type="Texture2D" uid="uid://d0ab611862b60" path="res://LeftPlatform.png" id="1_djjh8"]
+[ext_resource type="Script" path="res://objects/platform2x.gd" id="1_w4qj2"]
 [ext_resource type="Texture2D" uid="uid://v16kp2mky5yq" path="res://RightPlatform.png" id="2_1bjd8"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_7wggm"]
@@ -12,36 +13,29 @@ size = Vector2(48, 60)
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_j266e"]
 size = Vector2(70, 9.5)
 
-[sub_resource type="RectangleShape2D" id="RectangleShape2D_812xx"]
-size = Vector2(71, 52)
-
 [node name="2x" type="AnimatableBody2D"]
+collision_layer = 3
+script = ExtResource("1_w4qj2")
 
 [node name="Sprite2D" type="Sprite2D" parent="."]
-position = Vector2(-24, -2)
+position = Vector2(-24, 0)
 texture = ExtResource("1_djjh8")
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="."]
-position = Vector2(-24, -2)
+position = Vector2(-24, 0)
 shape = SubResource("RectangleShape2D_7wggm")
 
 [node name="Sprite2D2" type="Sprite2D" parent="."]
-position = Vector2(24, -2)
+position = Vector2(24, 0)
 texture = ExtResource("2_1bjd8")
 
 [node name="CollisionShape2D2" type="CollisionShape2D" parent="."]
-position = Vector2(24, -2)
+position = Vector2(24, 0)
 shape = SubResource("RectangleShape2D_jw3wb")
 
 [node name="Area2D" type="Area2D" parent="."]
 collision_layer = 2
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="Area2D"]
-position = Vector2(0, -35.75)
+position = Vector2(0, -32.75)
 shape = SubResource("RectangleShape2D_j266e")
-
-[node name="Area2D2" type="Area2D" parent="."]
-collision_layer = 16
-
-[node name="CollisionShape2D" type="CollisionShape2D" parent="Area2D2"]
-shape = SubResource("RectangleShape2D_812xx")

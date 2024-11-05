@@ -9,7 +9,7 @@ public partial class GeneratePlatform : Node
     public Node2D ParrentNode;
     public CharacterBody2D Player;
     public Timer _timer;
-    public Area2D wall;
+    static public Area2D wall;
 
     //Randomizing
     public const int SEED = 10;
@@ -80,9 +80,9 @@ public partial class GeneratePlatform : Node
         AddChild(d_plat);
         AddChild(e_plat);
         AddChild(l_plat);
-        
-        
-        
+
+        //GD.Print("dead1");
+
         _timer.Start(4);
        
 
@@ -91,7 +91,8 @@ public partial class GeneratePlatform : Node
     //Current->Next->Last, CurrnetFree, Current = Next, Next = Last, Last = spawn new.
 	// Called every frame. 'delta' is the elapsed time since the previous frame.
 	public override void _Process(double delta)
-	{
+	{        
+        SetNextPlatform();
         //GD.Print(_timer.TimeLeft);
         if (_timer.TimeLeft < 0.1)
         {
@@ -105,15 +106,15 @@ public partial class GeneratePlatform : Node
             _timer.Start(1.5);
         }
         
-        if (wall.HasOverlappingBodies() && removed==0)
-        {
-            removed = 1;
+        if (wall.HasOverlappingBodies())
+        {   Player.Call("ResetPlayerPosition");   
             wall.Set("position", new Vector2(ST_PLATFORM_X, ST_PLATFORM_Y + 40));
+            //GD.Print("dead2");
             ParrentNode.Call("reset_platforms");
-            Player.Call("ResetPlayerPosition");
-            AIController2D.Call("reset");
+            AIController2D.Call("reset_if_done");
+           
         }
-        SetNextPlatform();
+
         
 
 	}
@@ -132,6 +133,7 @@ public partial class GeneratePlatform : Node
     {
         plat.QueueFree();
     }
+    
     public void MovePlatforms()
     {
         //4-1-2
@@ -153,7 +155,7 @@ public partial class GeneratePlatform : Node
     }
     public void CheckPlatform()
     {
-        if (Math.Abs(current_x-last_x)>400 || Math.Abs(current_x - last_x) < 100){
+        if (Math.Abs(current_x-last_x)>400 || Math.Abs(current_x - last_x) < 150){
             current_x = rand.Next(-300, 300);
             CheckPlatform();
         }
@@ -188,10 +190,6 @@ public partial class GeneratePlatform : Node
         {
             next_platform = l_plat;
         }
-    }
-    public Area2D GetWall()
-    {
-        return wall;
     }
     public AnimatableBody2D GetCurrentPlatform()
     {

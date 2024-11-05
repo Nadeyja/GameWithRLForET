@@ -11,7 +11,7 @@
 [node name="startingPlatform" parent="." instance=ExtResource("1_qbeur")]
 
 [node name="2x" parent="." instance=ExtResource("2_p08do")]
-position = Vector2(2, 170)
+position = Vector2(-1, 169)
 
 [node name="3x" parent="." instance=ExtResource("3_o11km")]
 position = Vector2(232, 173)
