@@ -44,7 +44,7 @@ metadata/_edit_use_anchors_ = true
 [node name="AIController2D" type="Node2D" parent="." node_paths=PackedStringArray("ball")]
 script = ExtResource("4_wro32")
 ball = NodePath("..")
-onnx_model_path = "NinthIteration.onnx"
+onnx_model_path = "TenthIteration.onnx"
 
 [node name="RaycastSensor2D" type="Node2D" parent="AIController2D"]
 script = ExtResource("5_07hsy")

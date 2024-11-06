@@ -19,7 +19,7 @@ wall = NodePath("../../Wall")
 [node name="Sync" type="Node" parent="."]
 script = ExtResource("3_1msti")
 control_mode = 2
-onnx_model_path = "NinthIteration.onnx"
+onnx_model_path = "TenthIteration.onnx"
 
 [node name="Wall" parent="." instance=ExtResource("4_qjjr1")]
 
