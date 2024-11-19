@@ -212,8 +212,8 @@ public partial class BasicMovement : CharacterBody2D
 				Score sc = new Score();
 				sc.append_score();
 				double reward = (double)AIController2D.Get("reward");
-				AIController2D.Set("reward", reward+0.5+increment_reward);
-				increment_reward = increment_reward + 0.005;
+				AIController2D.Set("reward", reward+0.5/*+increment_reward*/);
+				//increment_reward = increment_reward + 0.005;
 				collision_list.Add(collision);
 				//GD.Print("After collision: "+ sc.get_score());
                 
@@ -226,7 +226,7 @@ public partial class BasicMovement : CharacterBody2D
 				Score sc = new Score();
 				sc.touched_celling();
                 double reward = (double)AIController2D.Get("reward");
-                AIController2D.Set("reward", reward-0.005);
+                AIController2D.Set("reward", reward-0.05);
                 //GD.Print("After collision: " + sc.get_score());
 
             }
@@ -244,28 +244,32 @@ public partial class BasicMovement : CharacterBody2D
     }
 	public void ResetPlayerPosition()
 	{
-		Score sc2 = new Score();
-		double score2 = sc2.get_score2();
-		if (score2 > 50) {
-			AIController2D.Set("is_success", true);
-		}
-		else
-		{
-			AIController2D.Set("is_success", false);
-		}		
-		increment_reward = 0;
 		Score sc = new Score();
-		sc.lose_score();
-        double reward = (double)AIController2D.Get("reward");
-        AIController2D.Set("reward", reward-2);
-		AIController2D.Set("done", true);
 		sc.reset_score(); 
 		Velocity = Vector2.Zero;	
 		first_collision = 0;
 		collision_list.Clear();
         this.Set("position", new Vector2(0,-50));
-	
-
 	}
-	
+	public void RewardAfterDeath()
+	{
+        Score sc2 = new Score();
+        AIController2D.Set("is_success", false);
+        //increment_reward = 0;
+        double reward = (double)AIController2D.Get("reward");
+        AIController2D.Set("reward", reward - 5);
+        AIController2D.Set("done", true);
+        sc2.reset_score();
+    }
+    public void RewardAfterWin()
+    {
+        Score sc2 = new Score();
+        AIController2D.Set("is_success", true);
+        //increment_reward = 0;
+        double reward = (double)AIController2D.Get("reward");
+        AIController2D.Set("reward", reward + 5);
+        AIController2D.Set("done", true);
+        sc2.reset_score();
+    }
+
 }

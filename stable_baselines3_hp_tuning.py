@@ -53,12 +53,12 @@ env = StableBaselinesGodotEnv(env_path=args.env_path, speedup=args.speedup)
 n_agents = env.num_envs
 env.close()
 
-N_TRIALS = 200
+N_TRIALS = 50
 N_STARTUP_TRIALS = 5
 N_EVALUATIONS = 1
-N_TIMESTEPS = 30000
+N_TIMESTEPS = 100000
 EVAL_FREQ = max(int((N_TIMESTEPS // N_EVALUATIONS) // (n_agents * args.n_parallel)), 1)
-N_EVAL_EPISODES = 3
+N_EVAL_EPISODES = 10
 STOP_TRIAL_TIMEOUT = 60 * 60 * 4  # 4 hours
 
 DEFAULT_HYPERPARAMS = {
@@ -69,12 +69,12 @@ DEFAULT_HYPERPARAMS = {
 def sample_ppo_params(trial: optuna.Trial) -> Dict[str, Any]:
     """Sampler for PPO hyperparameters."""
 
-    n_steps = trial.suggest_categorical("n_steps", [64, 128, 256, 512, 1024, 2048])
-    batch_size = trial.suggest_categorical("batch_size", [8, 16, 32, 64, 128, 256, 512])
+    n_steps = trial.suggest_categorical("n_steps", [64, 128, 256])
+    batch_size = trial.suggest_categorical("batch_size", [8, 16, 32, 64])
     n_epochs = trial.suggest_categorical("n_epochs", [5, 10, 15, 20])
     gamma = trial.suggest_categorical("gamma", [0.9, 0.95, 0.99, 0.995, 0.999])
-    ent_coef = trial.suggest_float("ent_coef", 0.00001, 0.1, log=True)
-    learning_rate = trial.suggest_float("learning_rate", 0.00001, 0.01, log=True)
+    ent_coef = trial.suggest_float("ent_coef", 0.0001, 0.02, log=True)
+    learning_rate = trial.suggest_float("learning_rate", 0.00001, 0.001, log=True)
     clip_range = trial.suggest_categorical("clip_range", [0.1, 0.2, 0.3])
     gae_lambda = trial.suggest_categorical("gae_lambda", [0.8, 0.9, 0.92, 0.95, 0.98, 0.99, 1.0])
     if batch_size > n_steps:

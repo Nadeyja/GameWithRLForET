@@ -81,7 +81,7 @@ func get_reward() -> float:
 		next_global_position.y = next_global_position.y-46
 		var distance_to_next = player.global_position.distance_to(next_global_position)
 		if distance_to_next < best_distance:
-			reward += (best_distance-distance_to_next)/10000
+			reward += (best_distance-distance_to_next)/5000
 		best_distance=distance_to_next
 	return reward;
 	

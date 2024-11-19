@@ -10,6 +10,7 @@ public partial class GeneratePlatform : Node
     public CharacterBody2D Player;
     public Timer _timer;
     static public Area2D wall;
+    Score sc2 = new Score();
 
     //Randomizing
     public const int SEED = 10;
@@ -60,6 +61,8 @@ public partial class GeneratePlatform : Node
         Player = GetNode<CharacterBody2D>("/root/MainNode/Player");
         _timer = GetNode<Timer>("/root/MainNode/Timer");
         wall = GetNode<Area2D>("/root/MainNode/Wall");
+        
+       
 
         c_plat = S_PLAT_SC.Instantiate<AnimatableBody2D>();
         c_plat.Set("position",STARTING_VECTOR);
@@ -107,17 +110,29 @@ public partial class GeneratePlatform : Node
         }
         
         if (wall.HasOverlappingBodies())
-        {   Player.Call("ResetPlayerPosition");   
+        {   
             wall.Set("position", new Vector2(ST_PLATFORM_X, ST_PLATFORM_Y + 40));
+            Player.Call("ResetPlayerPosition");
+            Player.Call("RewardAfterDeath");
             //GD.Print("dead2");
             ParrentNode.Call("reset_platforms");
-            AIController2D.Call("reset_if_done");
+            AIController2D.Call("reset");
            
         }
+        double score2 = sc2.get_score2();
+        if (score2 >= 200)
+        {
+            wall.Set("position", new Vector2(ST_PLATFORM_X, ST_PLATFORM_Y + 40));
+            Player.Call("ResetPlayerPosition");
+            Player.Call("RewardAfterWin");
+            ParrentNode.Call("reset_platforms");
+            AIController2D.Call("reset");
 
-        
+        }
 
-	}
+
+
+    }
     public AnimatableBody2D SpawnPlatform(PackedScene packedScene)
     {
         AnimatableBody2D plat;
