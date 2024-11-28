@@ -36,10 +36,10 @@ public partial class BasicMovement : CharacterBody2D
 	{
 		Vector2 velocity = Velocity;
 
-		// Add the gravity.
+		//Add the gravity.
 		velocity = Gravity(velocity,delta);
 
-		// Handle jump.
+		//Handle jump.
 		velocity = JumpMovement(velocity);
 
 		//Handle left right movement.
@@ -48,14 +48,14 @@ public partial class BasicMovement : CharacterBody2D
 		Velocity = velocity;
 		
 		MoveAndSlide();
-		Scoring();
+        ScoreOnNewCollision();
 		
 	}
 	public Vector2 Movement(Vector2 velocity)
 	{
 		Vector2 direction;
         //Take direction from input map.
-        if ((string)AIController2D.Get("heuristic") == "human") 
+        if ((string)AIController2D.Get("heuristic") == "human")
 		{ 
 			direction = Input.GetVector("player_move_left", "player_move_right", "ui_up", "ui_down");
 		}
@@ -80,7 +80,6 @@ public partial class BasicMovement : CharacterBody2D
 		//Move with gravity velocity if not on the floor.
         if (!IsOnFloor())
             velocity.Y += GRAVITYVALUE * (float)delta;
-
         return velocity;
 	}
 	public Vector2 JumpMovement(Vector2 velocity)
@@ -183,7 +182,7 @@ public partial class BasicMovement : CharacterBody2D
         actual_coyote_time_frames = 0;
         return velocity;
 	}
-	public void Scoring()
+	public void ScoreOnNewCollision()
 	{
 
 
@@ -230,15 +229,7 @@ public partial class BasicMovement : CharacterBody2D
                 //GD.Print("After collision: " + sc.get_score());
 
             }
-            /*if (IsOnWall())
-            {
-                Score sc = new Score();
-				sc.append_score_by(-0.02);
-                double reward = (double)AIController2D.Get("reward");
-                AIController2D.Set("reward", reward-0.001);
-                GD.Print("After collision: " + sc.get_score());
-
-            }*/
+ 
         }
 
     }

@@ -32,7 +32,7 @@ public partial class GeneratePlatform : Node
     
     
 
-    public static readonly int[] SPAWN_SPEED = { 10, 9, 8, 7, 6, 5, 4, 3, 2 };
+    //public static readonly int[] SPAWN_SPEED = { 10, 9, 8, 7, 6, 5, 4, 3, 2 };
     public const int ST_PLATFORM_X = 0;
     public const int ST_PLATFORM_Y = 0;
     public const int OFFSET_Y = 150;
@@ -43,13 +43,13 @@ public partial class GeneratePlatform : Node
     int removed;
     public Vector2 STARTING_VECTOR = new Vector2(ST_PLATFORM_X, ST_PLATFORM_Y);
     
-    public AnimatableBody2D c_plat;
-    public AnimatableBody2D n_plat;
-    public AnimatableBody2D a_plat;
-    public AnimatableBody2D b_plat;
-    public AnimatableBody2D d_plat;
-    public AnimatableBody2D e_plat;
-    public AnimatableBody2D l_plat;
+    public AnimatableBody2D first_platform;
+    public AnimatableBody2D second_platform;
+    public AnimatableBody2D third_platform;
+    public AnimatableBody2D fourth_platform;
+    public AnimatableBody2D fifth_platform;
+    public AnimatableBody2D sixth_platform;
+    public AnimatableBody2D last_platform;
     static public AnimatableBody2D current_platform;
     static public AnimatableBody2D next_platform;
     // Called when the node enters the scene tree for the first time.
@@ -64,74 +64,60 @@ public partial class GeneratePlatform : Node
         
        
 
-        c_plat = S_PLAT_SC.Instantiate<AnimatableBody2D>();
-        c_plat.Set("position",STARTING_VECTOR);
+        first_platform = S_PLAT_SC.Instantiate<AnimatableBody2D>();
+        first_platform.Set("position",STARTING_VECTOR);
         wall.Set("position", new Vector2(ST_PLATFORM_X, ST_PLATFORM_Y + 40));
-        n_plat = SpawnPlatform(scene_list[rand2.Next(0,3)]);
-        a_plat = SpawnPlatform(scene_list[rand2.Next(0, 3)]);
-        b_plat = SpawnPlatform(scene_list[rand2.Next(0, 3)]);
-        d_plat = SpawnPlatform(scene_list[rand2.Next(0, 3)]);
-        e_plat = SpawnPlatform(scene_list[rand2.Next(0, 3)]);
-        l_plat = SpawnPlatform(scene_list[rand2.Next(0, 3)]);
-        current_platform = c_plat;
-        next_platform = n_plat;
+        second_platform = SpawnPlatform(scene_list[rand2.Next(0, 4)]);
+        third_platform = SpawnPlatform(scene_list[rand2.Next(0, 4)]);
+        fourth_platform = SpawnPlatform(scene_list[rand2.Next(0, 4)]);
+        fifth_platform = SpawnPlatform(scene_list[rand2.Next(0, 4)]);
+        sixth_platform = SpawnPlatform(scene_list[rand2.Next(0, 4)]);
+        last_platform = SpawnPlatform(scene_list[rand2.Next(0, 4)]);
+        current_platform = first_platform;
+        next_platform = second_platform;
 
-        AddChild(c_plat);
-        AddChild(n_plat);
-        AddChild(a_plat);
-        AddChild(b_plat);
-        AddChild(d_plat);
-        AddChild(e_plat);
-        AddChild(l_plat);
+        AddChild(first_platform);
+        AddChild(second_platform);
+        AddChild(third_platform);
+        AddChild(fourth_platform);
+        AddChild(fifth_platform);
+        AddChild(sixth_platform);
+        AddChild(last_platform);
 
         //GD.Print("dead1");
 
-        _timer.Start(4);
+        _timer.Start(1.5);
        
 
 	}
 
-    //Current->Next->Last, CurrnetFree, Current = Next, Next = Last, Last = spawn new.
+    //First free, First = Second,..., Sixth = Last, Last = spawn new.
 	// Called every frame. 'delta' is the elapsed time since the previous frame.
-	public override void _Process(double delta)
-	{        
+	public override void _Process(double delta){        
         SetNextPlatform();
-        //GD.Print(_timer.TimeLeft);
-        if (_timer.TimeLeft < 0.1)
-        {
-            //GD.Print("Timer:"+_timer.TimeLeft);
+        if (_timer.TimeLeft < 0.1){
             MovePlatforms();
             _timer.Start(1.5);
         }
-        if (current_platform == a_plat)
-        {
+        if (current_platform == third_platform){
             MovePlatforms();
             _timer.Start(1.5);
-        }
-        
-        if (wall.HasOverlappingBodies())
-        {   
+        }      
+        if (wall.HasOverlappingBodies()){   
             wall.Set("position", new Vector2(ST_PLATFORM_X, ST_PLATFORM_Y + 40));
             Player.Call("ResetPlayerPosition");
             Player.Call("RewardAfterDeath");
-            //GD.Print("dead2");
             ParrentNode.Call("reset_platforms");
-            AIController2D.Call("reset");
-           
+            AIController2D.Call("reset");          
         }
         double score2 = sc2.get_score2();
-        if (score2 >= 200)
-        {
+        if (score2 >= 200){
             wall.Set("position", new Vector2(ST_PLATFORM_X, ST_PLATFORM_Y + 40));
             Player.Call("ResetPlayerPosition");
             Player.Call("RewardAfterWin");
             ParrentNode.Call("reset_platforms");
             AIController2D.Call("reset");
-
         }
-
-
-
     }
     public AnimatableBody2D SpawnPlatform(PackedScene packedScene)
     {
@@ -151,26 +137,25 @@ public partial class GeneratePlatform : Node
     
     public void MovePlatforms()
     {
-        //4-1-2
-        if (current_platform == c_plat) {
-            current_platform = n_plat;           
+        if (current_platform == first_platform) {
+            current_platform = second_platform;           
         }
-        DeletePlatform(c_plat);
-        c_plat = n_plat;
-        n_plat = a_plat;
-        a_plat = b_plat;
-        b_plat = d_plat;
-        d_plat = e_plat;
-        e_plat = l_plat;
-        l_plat = SpawnPlatform(scene_list[rand2.Next(0, 3)]);
-        AddChild(l_plat);
+        DeletePlatform(first_platform);
+        first_platform = second_platform;
+        second_platform = third_platform;
+        third_platform = fourth_platform;
+        fourth_platform = fifth_platform;
+        fifth_platform = sixth_platform;
+        sixth_platform = last_platform;
+        last_platform = SpawnPlatform(scene_list[rand2.Next(0, 4)]);
+        AddChild(last_platform);
         wall.Set("position", new Vector2(ST_PLATFORM_X, current_y + 7 * OFFSET_Y));
 
 
     }
     public void CheckPlatform()
     {
-        if (Math.Abs(current_x-last_x)>400 || Math.Abs(current_x - last_x) < 150){
+        if (Math.Abs(current_x-last_x)>400 || Math.Abs(current_x - last_x) < 200){
             current_x = rand.Next(-300, 300);
             CheckPlatform();
         }
@@ -181,29 +166,29 @@ public partial class GeneratePlatform : Node
     }
     public void SetNextPlatform()
     {
-        if (current_platform == c_plat)
+        if (current_platform == first_platform)
         {
-            next_platform = n_plat;
+            next_platform = second_platform;
         }
-        else if (current_platform == n_plat)
+        else if (current_platform == second_platform)
         {
-            next_platform = a_plat;
+            next_platform = third_platform;
         }
-        else if (current_platform == a_plat)
+        else if (current_platform == third_platform)
         {
-            next_platform = b_plat;
+            next_platform = fourth_platform;
         }
-        else if (current_platform == b_plat)
+        else if (current_platform == fourth_platform)
         {
-            next_platform = d_plat;
+            next_platform = fifth_platform;
         }
-        else if (current_platform == d_plat)
+        else if (current_platform == fifth_platform)
         {
-            next_platform = e_plat;
+            next_platform = sixth_platform;
         }
-        else if (current_platform == e_plat)
+        else if (current_platform == sixth_platform)
         {
-            next_platform = l_plat;
+            next_platform = last_platform;
         }
     }
     public AnimatableBody2D GetCurrentPlatform()

@@ -213,10 +213,10 @@ if args.resume_model_path is None:
         # gae_lambda=0.9,
         # clip_range=0.3,
 
+        verbose=2,
         #5It
         learning_rate=linear_schedule(0.0003),
         ent_coef=0.0001,
-        verbose=2,
         n_steps=1024,
         batch_size=256,
         n_epochs=24,
